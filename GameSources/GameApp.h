@@ -9,18 +9,20 @@
 #include "Engine/display/VisualContainer2d.h"
 
 class nsGameTemplate : public IGameApp {
-    bool InitDialog() override;
+    nsVisualContainer2d *_stage = nullptr;
+    IRenDevice *_device;
+
     bool Init() override;
     void Release() override;
-    void DrawWorld() override;
     void Loop(float frameTime) override;
+    void DrawWorld() override;
+
     void OnActivate(bool active) override;
     void OnPause(bool paused) override;
+
+    bool InitDialog() override;
     int GetWindowIcon() override;
     IUserInput *GetUserInput() override;
     void GetGUIDimension(int &width, int &height) override;
     const char *GetVersionInfo() override;
-
-private:
-    nsVisualContainer2d *_stage = nullptr;
 };

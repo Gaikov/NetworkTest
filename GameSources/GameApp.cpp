@@ -7,21 +7,35 @@
 #include "Engine/display/VisualSceneRender2d.h"
 #include "Engine/RenManager.h"
 #include "Engine/Input.h"
+#include "Engine/display/Sprite.h"
+#include "Engine/display/text/TextLabel.h"
+#include "Engine/utils/AppUtils.h"
+#include "Engine/TimeFormat.h"
 
-static nsGameTemplate g_game;
-
-IGameApp*	App_GetGame() {
-    return &g_game;
-}
-
-bool nsGameTemplate::InitDialog() {
-    return true;
-}
 
 bool nsGameTemplate::Init() {
-    _stage = new nsVisualContainer2d();
-    g_inp.ShowCursor(true);
+    _device = nsRenDevice::Shared()->Device();
 
+    _stage = new nsVisualContainer2d();
+
+    auto sprite = new nsSprite();
+    sprite->desc.tex = _device->TextureLoad("tests/background.jpg");
+    sprite->desc.ResetSize().ComputeCenter();
+
+    auto label = new nsTextLabel();
+    label->color = nsColor::yellow;
+    label->text = "Hello from GROm!";
+    label->origin.scale = {1, 2};
+
+    _stage->AddChild(sprite);
+    _stage->AddChild(label);
+
+
+    nsRect  r;
+    label->GetBounds(r, _stage);
+    label->origin.pos = nsVec2(r.width, r.height) / -2;
+
+    g_inp.ShowCursor(true);
     return true;
 }
 
@@ -30,15 +44,20 @@ void nsGameTemplate::Release() {
 }
 
 void nsGameTemplate::DrawWorld() {
-    auto dev = nsRenDevice::Shared()->Device();
+    _device->ClearScene(CLR_CBUFF | CLR_ZBUFF | CLR_STENCIL);
 
-    dev->ClearScene(CLR_CBUFF | CLR_ZBUFF | CLR_STENCIL);
+    _stage->origin.angle = _stage->origin.angle + g_frameTime;
+    _stage->origin.pos = nsAppUtils::GetClientSize() / 2;
 
     nsVisualSceneRender2d::DrawScene(_stage);
 }
 
 void nsGameTemplate::Loop(float frameTime) {
     _stage->Loop();
+}
+
+IUserInput *nsGameTemplate::GetUserInput() {
+    return _stage;
 }
 
 void nsGameTemplate::OnActivate(bool active) {
@@ -52,14 +71,23 @@ void nsGameTemplate::OnPause(bool paused) {
 int nsGameTemplate::GetWindowIcon() {
     return 0;
 }
-IUserInput *nsGameTemplate::GetUserInput() {
-    return nullptr;
+
+bool nsGameTemplate::InitDialog() {
+    return true;
 }
+
 
 void nsGameTemplate::GetGUIDimension(int &width, int &height) {
     App_GetPlatform()->GetClientSize(width, height);
 }
 
 const char *nsGameTemplate::GetVersionInfo() {
-    return "Template 1.0.0-alpha.0";
+    return "Template 1.0.0";
 }
+
+static nsGameTemplate g_game;
+
+IGameApp*	App_GetGame() {
+    return &g_game;
+}
+
