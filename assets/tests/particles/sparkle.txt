@@ -1,0 +1,67 @@
+$amountPerSecond 100
+
+$spawners {
+    $circle {
+        $radius 100
+        $minRadius 5
+    }
+
+    $life {
+        $minTime 0.5
+        $maxTime 1
+    }
+
+    $size {
+        $minSize 200
+        $maxSize 100
+    }
+
+    $radialVel {
+        $minSpeed 800
+        $maxSpeed 400
+    }
+}
+
+$updaters {
+    $gravity {
+        $velocity 0 -1000
+    }
+
+    $velApply {
+    }
+
+    $velAngle {
+    }
+
+    $sizeTimeline {
+        $frame {
+            $time 0
+            $scale 0
+        }
+
+        $frame {
+            $time 0.05
+            $scale 1
+        }
+
+        $frame {
+            $time 0.05
+            $scale 1
+        }
+
+        $frame {
+            $time 0.9
+            $scale 0
+        }
+    }
+}
+
+$renderer {
+    $name "toon"
+    $frontTexture "tests/sparkle.png"
+    $backTexture "tests/sparkle_back.png"
+    $borderColor 1 0.3 0 1
+    $borderSize 10
+
+    $renState "default/rs/parts_blend.txt"
+}

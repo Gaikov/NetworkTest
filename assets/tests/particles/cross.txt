@@ -1,0 +1,63 @@
+$amountPerSecond 3000
+
+$spawners {
+    $edges {
+        $edge {
+            $point1 0 400
+            $point2 0 -400
+        }
+
+        $edge {
+            $point1 -400 0
+            $point2 400 0
+        }
+    }
+
+    $life {
+        $minTime 0.4
+        $maxTime 0.6
+    }
+
+    $size {
+        $minSize 50
+        $maxSize 80
+    }
+
+    $rightVel {
+        $minSpeed 0
+        $maxSpeed -400
+        $randomDirection 1
+    }
+
+    $angle {
+        $minAngle 0
+        $maxAngle 360
+    }
+}
+
+$updaters {
+    $velApply {
+    }
+
+    $sizeScale {
+        $scale 0
+    }
+
+    $colorTimeline {
+        $frame {
+            $time 0
+            $color 0.3 0.3 1 1
+        }
+
+        $frame {
+            $time 1
+            $color 0.2 1 0.2 1
+        }
+    }
+}
+
+$renderer {
+    $name "round"
+    $texture "tests/star_white.png"
+    $renState "default/rs/gui_add.txt"
+}

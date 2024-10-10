@@ -1,0 +1,61 @@
+$amountPerSecond 100
+
+$spawners {
+    $circle {
+        $radius 300
+        $minRadius 200
+        $onEdge 1
+    }
+
+    $life {
+        $minTime 1
+        $maxTime 2
+    }
+
+    $size {
+        $minSize 200
+        $maxSize 300
+    }
+
+    $radialVel {
+        $minSpeed 200
+        $maxSpeed 100
+    }
+}
+
+$updaters {
+    $velApply {
+    }
+
+    $sizeTimeline {
+        $frame {
+            $time 0
+            $scale 0
+        }
+
+        $frame {
+            $time 0.05
+            $scale 1
+        }
+
+        $frame {
+            $time 0.05
+            $scale 1
+        }
+
+        $frame {
+            $time 0.9
+            $scale 0
+        }
+    }
+}
+
+$renderer {
+    $name "toon"
+    $frontTexture "tests/smoke.png"
+    $backTexture "tests/smoke_back.png"
+    $borderColor 0.4 0.6 0.7 1
+    $borderSize 6
+
+    $renState "default/rs/gui.txt"
+}

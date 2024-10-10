@@ -1,0 +1,6 @@
+/GROmEngine/
+/cmake-build-debug-external-mingw/
+/cmake-build-release-external-mingw/
+/.idea/
+/assets/*.log
+/assets/*.cfg

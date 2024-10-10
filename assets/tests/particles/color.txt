@@ -1,0 +1,85 @@
+$amountPerSecond 500
+
+$spawners {
+    $circle {
+        $radius 100
+        $minRadius 100
+        $onEdge 1
+    }
+
+    $life {
+        $minTime 2
+        $maxTime 2
+    }
+
+    $size {
+        $minSize 50
+        $maxSize 100
+    }
+
+    $radialVel {
+        $minSpeed 200
+        $maxSpeed 200
+    }
+}
+
+$updaters {
+    $velApply {
+    }
+
+    $sizeTimeline {
+        $frame {
+            $time 0
+            $scale 0
+        }
+
+        $frame {
+            $time 0.05
+            $scale 1
+        }
+
+        $frame {
+            $time 0.05
+            $scale 1
+        }
+
+        $frame {
+            $time 0.9
+            $scale 0.2
+        }
+    }
+
+    $colorTimeline {
+        $frame {
+            $time 0
+            $color 1 1 0 1
+        }
+        $frame {
+            $time 1
+            $color 1 0 1 1
+        }
+        $frame {
+            $time 1
+            $color 1 0 0 1
+        }
+        $frame {
+            $time 1
+            $color 0 1 1 1
+        }
+        $frame {
+            $time 1
+            $color 0 1 0 1
+        }
+        $frame {
+            $time 1
+            $color 0 0 1 1
+        }
+    }
+}
+
+$renderer {
+    $name "round"
+    $texture "tests/star_white.png"
+
+    $renState "default/rs/parts_add.txt"
+}

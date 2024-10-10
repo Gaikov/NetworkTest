@@ -1,0 +1,74 @@
+$amountPerSecond 500
+
+$spawners {
+    $polygon {
+        $point -300 0
+        $point 300 0
+    }
+
+    $life {
+        $minTime 1
+        $maxTime 1.5
+    }
+
+    $size {
+        $minSize 100
+        $maxSize 200
+    }
+
+    $angle {
+        $minAngle 0
+        $maxAngle 360
+    }
+
+}
+
+$updaters {
+    $velApply {
+    }
+
+    $sizeTimeline {
+        $frame {
+            $time 0
+            $scale 1
+        }
+
+        $frame {
+            $time 1
+            $scale 0
+        }
+    }
+
+    $gravity {
+        $velocity 0 1000
+    }
+
+    $colorTimeline {
+        $frame {
+            $time 0
+            $color 1 1 1 0
+        }
+
+        $frame {
+            $time 0.1
+            $color 1 1 1 1
+        }
+
+        $frame {
+            $time 0.8
+            $color 1 1 1 1
+        }
+
+        $frame {
+            $time 0.1
+            $color 1 1 1 0
+        }
+
+    }
+}
+
+$renderer {
+    $name "round"
+    $texture "tests/fire.jpg"
+    $renState "default/rs/gui_add.txt"
+}

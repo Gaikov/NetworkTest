@@ -1,0 +1,48 @@
+$amountPerSecond 2000
+
+$spawners {
+    $circle {
+        $radius 300
+        $onEdge 1
+    }
+
+    $life {
+        $minTime 0.3
+        $maxTime 0.5
+    }
+
+    $size {
+        $minSize 50
+        $maxSize 100
+    }
+
+    $radialVel {
+        $minSpeed 0
+        $maxSpeed 500
+        $randomDirection 1
+    }
+
+    $angle {
+        $minAngle 0
+        $maxAngle 360
+    }
+}
+
+$updaters {
+    $velApply {
+    }
+
+    $sizeScale {
+        $scale 0
+    }
+
+    $gravity {
+        $velocity 0 -1000
+    }
+}
+
+$renderer {
+    $name "round"
+    $texture "tests/particle.jpg"
+    $renState "default/rs/gui_add.txt"
+}
