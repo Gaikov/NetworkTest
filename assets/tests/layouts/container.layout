@@ -1,16 +1,17 @@
 $container {
     $children {
-        $layout {
-            $source "layouts/image.layout"
-            $x 0
-            $y 0
-            $sx 1
-            $sy 1
+        $layoutRef {
+            $source "tests/layouts/image.layout"
+            $x 50
+            $y 500
+            $sx 0.5
+            $sy 0.5
         }
 
         $label {
             $font "tests/fonts/bmfont.fnt"
             $text "Hello from GROm!"
+            $renState "default/rs/gui.txt"
             $y 200
         }
     }
