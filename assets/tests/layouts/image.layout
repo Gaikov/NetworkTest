@@ -1,0 +1,8 @@
+$sprite {
+    $texture "tests/background.jpg"
+    $renState "default/rs/gui.txt"
+
+    $x 200
+    $y 200
+    $angle 45
+}

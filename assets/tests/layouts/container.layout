@@ -1,0 +1,17 @@
+$container {
+    $children {
+        $layout {
+            $source "layouts/image.layout"
+            $x 0
+            $y 0
+            $sx 1
+            $sy 1
+        }
+
+        $label {
+            $font "tests/fonts/bmfont.fnt"
+            $text "Hello from GROm!"
+            $y 200
+        }
+    }
+}
