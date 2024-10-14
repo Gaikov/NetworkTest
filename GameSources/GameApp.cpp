@@ -11,6 +11,7 @@
 #include "Engine/display/text/TextLabel.h"
 #include "Engine/utils/AppUtils.h"
 #include "Engine/TimeFormat.h"
+#include "Engine/renderer/font/FontsCache.h"
 
 
 bool nsGameTemplate::Init() {
@@ -25,7 +26,7 @@ bool nsGameTemplate::Init() {
     auto label = new nsTextLabel();
     label->color = nsColor::yellow;
     label->text = "Hello from GROm!";
-    label->origin.scale = {1, 2};
+    label->font = nsFontsCache::Shared()->LoadFont("tests/fonts/bmfont.fnt");
 
     _stage->AddChild(sprite);
     _stage->AddChild(label);
