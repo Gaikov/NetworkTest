@@ -17,6 +17,7 @@ $container {
 
         $particles {
             $source "tests/particles/point.txt"
+            $space "global"
         }
     }
 }
