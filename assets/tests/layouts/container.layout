@@ -14,5 +14,9 @@ $container {
             $renState "default/rs/gui.txt"
             $y 200
         }
+
+        $particles {
+            $source "tests/particles/point.txt"
+        }
     }
 }
