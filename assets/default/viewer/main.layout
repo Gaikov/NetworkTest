@@ -1,0 +1,96 @@
+$group {
+    $bindingId "MainView"
+
+    $masking {
+        $mask "sceneViewMask"
+        $masked "sceneView"
+    }
+
+    $children {
+        $sprite {
+            $id "sceneViewMask"
+
+            $xMin 10 0
+            $yMin 10 0
+            $xMax 210 0
+            $yMax 10
+        }
+
+        $group {
+            $id "sceneView"
+            $bindingId "SceneView"
+
+            $xMin 10 0
+            $yMin 10 0
+            $xMax 210 0
+            $yMax 10
+
+            $children {
+                $container {
+
+                    $id "coordSystem"
+
+                    $children {
+                        $sprite {
+                            $id "background"
+                            $renState "default/rs/gui.txt"
+                            $size 10000 10000
+                            $pivot 5000 5000
+                            $color 0.1 0.1 0.1 1
+                        }
+
+                        $anchor {
+                            $size 10000
+                            $color 0.5 1 0.5 1
+                        }
+                    }
+                }
+            }
+        }
+
+        $vgroup {
+            $xMax 5 0 //value type(0,1)
+            $yMin 5 0
+            $yMax 5 0
+
+            $gap 5
+
+            $children {
+                $textButton {
+                    $id "buttonEmit"
+                    $label "Emit$ Particles On/Off"
+                    $xMax 0 0
+                    $minWidth 200
+                }
+
+                $textButton {
+                    $id "buttonBlast"
+                    $label "Blast Particles"
+                    $xMax 0 0
+                    $minWidth 200
+                }
+
+                $textButton {
+                    $id "buttonXFlip"
+                    $label "X Flip"
+                    $xMax 0 0
+                    $minWidth 200
+                }
+
+                $textButton {
+                    $id "buttonYFlip"
+                    $label "Y Flip"
+                    $xMax 0 0
+                    $minWidth 200
+                }
+
+                $textButton {
+                    $id "buttonResetZoom"
+                    $label "Reset Zoom"
+                    $xMax 0 0
+                    $minWidth 200
+                }
+            }
+        }
+    }
+}
