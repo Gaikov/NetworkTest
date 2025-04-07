@@ -16,6 +16,11 @@ include_directories(
 )
 
 add_subdirectory(GROmEngine)
+
+if (CMAKE_SYSTEM_NAME STREQUAL Android)
+    add_subdirectory(Android/app/src/main/cpp)
+endif()
+
 add_subdirectory(GameSources)
 
 add_dependencies(${GAME_MODULE_NAME} Engine)
