@@ -13,7 +13,6 @@
 #include "Engine/TimeFormat.h"
 #include "Engine/renderer/font/FontsCache.h"
 
-
 bool nsGameTemplate::Init() {
     _device = nsRenDevice::Shared()->Device();
 
@@ -26,6 +25,7 @@ bool nsGameTemplate::Init() {
     auto label = new nsTextLabel();
     label->color = nsColor::yellow;
     label->text = "Hello from GROm!";
+    label->renState = _device->StateLoad("default/rs/alpha_blend.txt");
     label->font = nsFontsCache::Shared()->LoadFont("tests/fonts/bmfont.fnt");
 
     _stage->AddChild(sprite);

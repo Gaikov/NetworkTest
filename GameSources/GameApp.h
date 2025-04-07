@@ -5,8 +5,8 @@
 //--------------------------------------------------------------------------------------------------
 #pragma once
 
+#include "Engine/display/container/VisualContainer2d.h"
 #include "Engine/GameApp.h"
-#include "Engine/display/VisualContainer2d.h"
 
 class nsGameTemplate : public IGameApp {
     nsVisualContainer2d *_stage = nullptr;
