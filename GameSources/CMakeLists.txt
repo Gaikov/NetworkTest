@@ -1,19 +1,25 @@
 project(GameTemplate)
 
-set(SRC
+set(sources
         GameApp.cpp
         GameAppInfo.cpp
 )
 
 if (ANDROID)
-    add_library(GameTemplate STATIC ${sources} ${SRC})
-else ()
-    add_executable(GameTemplate ${sources} ${SRC})
+    add_library(${GAME_MODULE_NAME} STATIC ${sources})
+    target_link_libraries(${GAME_MODULE_NAME} ${GROM_ENGINE_LIBS})
+elseif (WEB_ASM)
+    add_executable(${GAME_MODULE_NAME} ${sources})
+
+    set_target_properties(index PROPERTIES
+            LINK_FLAGS "-sUSE_WEBGL2=0 -sUSE_GLFW=3 -sMAX_WEBGL_VERSION=1 -sMIN_WEBGL_VERSION=1 -sLEGACY_GL_EMULATION=1 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/shell_minimal.html"
+    )
+
+    target_link_libraries(${GAME_MODULE_NAME} ${GROM_ENGINE_LIBS})
+else()
+    add_executable(${GAME_MODULE_NAME} ${sources})
+    target_link_libraries(${GAME_MODULE_NAME} ${GROM_ENGINE_LIBS})
 endif ()
 
 include_directories(./)
 
-target_link_libraries(
-        GameTemplate
-        ${GROM_ENGINE_LIBS}
-)
