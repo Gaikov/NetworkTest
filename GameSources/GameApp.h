@@ -10,7 +10,7 @@
 
 class nsGameTemplate : public IGameApp {
     nsVisualContainer2d *_stage = nullptr;
-    IRenDevice *_device;
+    IRenDevice *_device = nullptr;
 
     bool Init() override;
     void Release() override;
