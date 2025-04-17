@@ -17,15 +17,18 @@ bool nsGameTemplate::Init() {
     _device = nsRenDevice::Shared()->Device();
 
     _stage = new nsVisualContainer2d();
+    auto renState = _device->StateLoad("default/rs/gui_clamp.txt");
 
     auto sprite = new nsSprite();
+    sprite->renState = renState;
     sprite->desc.tex = _device->TextureLoad("tests/background.jpg");
     sprite->desc.ResetSize().ComputeCenter();
+    sprite->desc.color = nsColor::white;
 
     auto label = new nsTextLabel();
     label->color = nsColor::yellow;
     label->text = "Hello from GROm!";
-    label->renState = _device->StateLoad("default/rs/alpha_blend.txt");
+    label->renState = renState;
     label->font = nsFontsCache::Shared()->LoadFont("tests/fonts/bmfont.fnt");
 
     _stage->AddChild(sprite);
