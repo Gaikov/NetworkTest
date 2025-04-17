@@ -11,7 +11,10 @@
 #include "Engine/display/text/TextLabel.h"
 #include "Engine/utils/AppUtils.h"
 #include "Engine/TimeFormat.h"
+#include "Engine/display/particles/VisualParticles.h"
 #include "Engine/renderer/font/FontsCache.h"
+#include "Engine/renderer/particles/ParticlesManager.h"
+#include "Engine/renderer/particles/ParticleSystem.h"
 
 bool nsGameTemplate::Init() {
     _device = nsRenDevice::Shared()->Device();
@@ -19,9 +22,10 @@ bool nsGameTemplate::Init() {
     _stage = new nsVisualContainer2d();
     auto renState = _device->StateLoad("default/rs/gui_clamp.txt");
 
+    auto back = _device->TextureLoad("tests/background.jpg");
     auto sprite = new nsSprite();
     sprite->renState = renState;
-    sprite->desc.tex = _device->TextureLoad("tests/background.jpg");
+    sprite->desc.tex = back;
     sprite->desc.ResetSize().ComputeCenter();
     sprite->desc.color = nsColor::white;
 
@@ -31,9 +35,28 @@ bool nsGameTemplate::Init() {
     label->renState = renState;
     label->font = nsFontsCache::Shared()->LoadFont("tests/fonts/bmfont.fnt");
 
+
     _stage->AddChild(sprite);
     _stage->AddChild(label);
 
+    int w, h;
+    back->GetSize(w, h);
+    nsVec2 corners[4] = {
+        nsVec2(-w / 2.0f, -h / 2.0f),
+        nsVec2(w / 2.0f, -h / 2.0f),
+        nsVec2(w / 2.0f, h / 2.0f),
+        nsVec2(-w / 2.0f, h / 2.0f)
+    };
+
+    auto particles = nsParticlesManager::Shared()->LoadParticles("tests/particles/point.txt");
+
+    for (auto pos : corners) {
+        auto parts = new nsVisualParticles();
+        parts->origin.pos = pos;
+        parts->GetSystem().behaviour = particles;
+        parts->space = nsVisualParticles::GLOBAL;
+        _stage->AddChild(parts);
+    }
 
     nsRect  r;
     label->GetBounds(r, _stage);

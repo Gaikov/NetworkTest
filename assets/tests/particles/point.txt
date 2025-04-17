@@ -2,7 +2,7 @@ $amountPerSecond 1000
 
 $spawners {
     $circle {
-        $radius 10
+        $radius 1
     }
 
     $life {
@@ -12,23 +12,30 @@ $spawners {
 
     $size {
         $minSize 50
-        $maxSize 100
-    }
-
-    $vectorVel {
-        $direction 0 1
-        $minSpeed 0
-        $maxSpeed 500
+        $maxSize 30
     }
 
     $angle {
         $minAngle 0
         $maxAngle 360
     }
+
+    $radialVel {
+        $minSpeed 50
+        $maxSpeed 70
+    }
+
 }
 
 $updaters {
+//    $gravity {
+//        $velocity 0 -2000
+//    }
+
     $velApply {
+    }
+
+    $velAngle {
     }
 
     $sizeScale {
