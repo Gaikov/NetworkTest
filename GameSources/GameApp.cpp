@@ -10,7 +10,6 @@
 #include "Engine/display/Sprite.h"
 #include "Engine/display/text/TextLabel.h"
 #include "Engine/utils/AppUtils.h"
-#include "Engine/TimeFormat.h"
 #include "Engine/display/particles/VisualParticles.h"
 #include "Engine/renderer/font/FontsCache.h"
 #include "Engine/renderer/particles/ParticlesManager.h"
@@ -73,7 +72,6 @@ void nsGameTemplate::Release() {
 void nsGameTemplate::DrawWorld() {
     _device->ClearScene(CLR_CBUFF | CLR_ZBUFF | CLR_STENCIL);
 
-    _stage->origin.angle = _stage->origin.angle + g_frameTime;
     _stage->origin.pos = nsAppUtils::GetClientSize() / 2;
 
     nsVisualSceneRender2d::DrawScene(_stage);
@@ -81,6 +79,7 @@ void nsGameTemplate::DrawWorld() {
 
 void nsGameTemplate::Loop(float frameTime) {
     _stage->Loop();
+    _stage->origin.angle = _stage->origin.angle + frameTime;
 }
 
 IUserInput *nsGameTemplate::GetUserInput() {
