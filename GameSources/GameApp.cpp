@@ -21,7 +21,7 @@ bool nsGameTemplate::Init() {
     _stage = new nsVisualContainer2d();
     auto renState = _device->StateLoad("default/rs/gui_clamp.txt");
 
-    auto back = _device->TextureLoad("tests/background.jpg");
+    auto back = _device->TextureLoad("grom-logo.png");
     auto sprite = new nsSprite();
     sprite->renState = renState;
     sprite->desc.tex = back;
@@ -59,7 +59,7 @@ bool nsGameTemplate::Init() {
 
     nsRect  r;
     label->GetBounds(r, _stage);
-    label->origin.pos = nsVec2(r.width, r.height) / -2;
+    label->origin.pos = nsVec2(r.width, r.height + w / 1.5f) / -2;
 
     g_inp.ShowCursor(true);
     return true;
