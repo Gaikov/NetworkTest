@@ -1,0 +1,3 @@
+- IsMobile implementation for web
+- Sounds activation for web
+- pixel to pixel canvas size
