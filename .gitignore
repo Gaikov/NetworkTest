@@ -5,3 +5,4 @@
 /assets/*.log
 /assets/*.cfg
 /bin/
+/cmake-build-debug/

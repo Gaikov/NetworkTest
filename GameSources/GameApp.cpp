@@ -72,7 +72,9 @@ bool nsGameTemplate::Init() {
 }
 
 void nsGameTemplate::Release() {
-    _stage->Destroy();
+    if (_stage) {
+        _stage->Destroy();
+    }
 }
 
 void nsGameTemplate::DrawWorld() {
