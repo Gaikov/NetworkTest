@@ -35,7 +35,6 @@ bool nsGameTemplate::Init() {
     label->renState = renState;
     label->font = nsFontsCache::Shared()->LoadFont("tests/fonts/bmfont.fnt");
 
-
     _stage->AddChild(sprite);
     _stage->AddChild(label);
 
@@ -66,6 +65,9 @@ bool nsGameTemplate::Init() {
 
     auto snd = nsSoundDevice::Shared()->Device();
     snd->TrackPlay(snd->TrackLoad("tests/test.ogg"));
+
+    Log::Info("Device Env: %s", App_GetPlatform()->IsMobile() ? "Mobile" : "Desktop");
+
     return true;
 }
 
