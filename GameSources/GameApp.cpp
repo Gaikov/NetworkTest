@@ -3,6 +3,7 @@
 //
 
 #include "GameApp.h"
+#include "Engine/SndManager.h"
 #include "Engine/Platform.h"
 #include "Engine/display/VisualSceneRender2d.h"
 #include "Engine/RenManager.h"
@@ -62,6 +63,9 @@ bool nsGameTemplate::Init() {
     label->origin.pos = nsVec2(r.width, r.height + w / 1.5f) / -2;
 
     g_inp.ShowCursor(true);
+
+    auto snd = nsSoundDevice::Shared()->Device();
+    snd->TrackPlay(snd->TrackLoad("tests/test.ogg"));
     return true;
 }
 
