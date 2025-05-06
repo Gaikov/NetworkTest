@@ -82,7 +82,7 @@
     e.preventDefault();
   }, false);
 
-  var Module = {
+  const Module = {
     print(...args) {
       console.log(...args);
     },
@@ -90,6 +90,7 @@
       console.log("onRuntimeInitialized");
       const loader = document.getElementById("loaderScreen");
       document.body.removeChild(loader);
+      window.onresize = onResize;
       onResize();
     },
     canvas: canvasElement,
@@ -103,12 +104,8 @@
     const w = window.innerWidth;
     const h = window.innerHeight;
     console.log("onResize", w, h);
-    canvasElement.width = w;
-    canvasElement.height = h;
+    Module.setCanvasSize(w, h);
   }
-
-  window.onresize = onResize;
-  onResize();
 </script>
 {{{ SCRIPT }}}
 </body>
