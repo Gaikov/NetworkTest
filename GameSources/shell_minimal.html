@@ -82,6 +82,17 @@
     e.preventDefault();
   }, false);
 
+  function preventEventScroll(name) {
+    canvasElement.addEventListener(name, function (e) {
+      e.preventDefault();
+    }, { passive: false });
+  }
+
+  preventEventScroll("wheel");
+  preventEventScroll("keydown");
+  preventEventScroll("keyup");
+  preventEventScroll("keypress");
+
   var Module = {
     print(...args) {
       console.log(...args);
