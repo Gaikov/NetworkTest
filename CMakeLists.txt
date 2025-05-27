@@ -6,7 +6,7 @@ message(STATUS "Hello from GROm!")
 if (WEB_ASM)
     set(GAME_MODULE_NAME index)
 else()
-    set(GAME_MODULE_NAME GameTemplate)
+    set(GAME_MODULE_NAME ClientTest)
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
@@ -31,10 +31,12 @@ add_subdirectory(GROmEngine)
 
 if (CMAKE_SYSTEM_NAME STREQUAL Android)
     add_subdirectory(Android/app/src/main/cpp)
-endif ()
+else ()
+    add_subdirectory(ServerSources)
+    add_dependencies(ServerApp Engine)
+endif()
 
 add_subdirectory(GameSources)
 
 add_dependencies(${GAME_MODULE_NAME} Engine)
-
 #print_all_variables()
