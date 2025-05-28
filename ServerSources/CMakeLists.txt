@@ -9,4 +9,4 @@ set(sources
 include_directories(./)
 
 add_executable(ServerApp ${sources})
-target_link_libraries(ServerApp ${GROM_ENGINE_LIBS})
+target_link_libraries(ServerApp ${GROM_ENGINE_LIBS} Networking)
