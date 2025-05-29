@@ -7,7 +7,7 @@
 
 #include "Engine/display/container/VisualContainer2d.h"
 #include "Engine/GameApp.h"
-#include "Networking/ClientSocket.h"
+#include "Networking/client/ClientSocket.h"
 
 class nsGameTemplate : public IGameApp {
     nsVisualContainer2d *_stage = nullptr;
