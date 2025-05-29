@@ -7,10 +7,12 @@
 
 #include "Engine/display/container/VisualContainer2d.h"
 #include "Engine/GameApp.h"
+#include "Networking/ClientSocket.h"
 
 class nsGameTemplate : public IGameApp {
     nsVisualContainer2d *_stage = nullptr;
     IRenDevice *_device = nullptr;
+    nsClientSocket *_socket = nullptr;
 
     bool Init() override;
     void Release() override;
