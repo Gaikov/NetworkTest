@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "Core/Memory.h"
 #include "Core/debug/LogStdOut.h"
 #include "Engine/Platform.h"
 #include "Networking/Net.h"
@@ -35,4 +36,6 @@ int main(int argc, char *argv[]) {
     delete server;
     nsNet::Release();
     Log::Release();
+    mem_report();
+    return 0;
 }
