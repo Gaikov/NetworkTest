@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    server->Stop();
     delete server;
     nsNet::Release();
     Log::Release();

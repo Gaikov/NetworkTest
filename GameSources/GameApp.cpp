@@ -8,6 +8,7 @@
 #include "Engine/RenManager.h"
 #include "Engine/utils/AppUtils.h"
 #include "Networking/Net.h"
+#include "Networking/client/Client.h"
 
 bool nsGameTemplate::Init() {
     if (!nsNet::Init()) {
@@ -17,15 +18,15 @@ bool nsGameTemplate::Init() {
     _device = nsRenDevice::Shared()->Device();
     _stage = new nsVisualContainer2d();
 
-    _socket = new nsClientSocket();
-    if (!_socket->Connect("127.0.0.1", 3333)) {
-        return false;
-    }
+    _client = new nsClient();
+    _client->Connect("127.0.0.1", 3333);
 
     return true;
 }
 
 void nsGameTemplate::Release() {
+    delete _client;
+
     if (_stage) {
         _stage->Destroy();
     }
