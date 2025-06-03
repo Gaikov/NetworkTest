@@ -19,6 +19,11 @@ bool nsGameTemplate::Init() {
     _stage = new nsVisualContainer2d();
 
     _client = new nsClient();
+    _client->AddPacketHandler(nsPacketId::MESSAGE, [](const nsPacket *packet) {
+        const auto msg = reinterpret_cast<const nsMessagePacket*>(packet);
+        Log::Info("Net message: %s", msg->message);
+    });
+
     _client->Connect("127.0.0.1", 3333);
 
     return true;
@@ -43,6 +48,7 @@ void nsGameTemplate::DrawWorld() {
 }
 
 void nsGameTemplate::Loop(float frameTime) {
+    _client->ProcessPackets();
     _stage->Loop();
     _stage->origin.angle = _stage->origin.angle + frameTime;
 }
