@@ -4,6 +4,8 @@
 
 #include "GameApp.h"
 
+#include "Packets.h"
+#include "Engine/Input.h"
 #include "Core/Config.h"
 #include "Engine/Platform.h"
 #include "Engine/display/VisualSceneRender2d.h"
@@ -13,17 +15,76 @@
 #include "Networking/client/Client.h"
 
 bool nsGameTemplate::Init() {
+    srand(time(nullptr));
+
     if (!nsNet::Init()) {
         return false;
     }
 
     _device = nsRenDevice::Shared()->Device();
     _stage = new nsVisualContainer2d();
+    _self = new nsClientSprite();
+    _stage->AddChild(_self);
 
     _client = new nsClient();
     _client->AddPacketHandler(nsPacketId::MESSAGE, [](const nsPacket *packet) {
-        const auto msg = reinterpret_cast<const nsMessagePacket*>(packet);
+        const auto msg = reinterpret_cast<const nsMessagePacket *>(packet);
         Log::Info("Net message: %s", msg->message);
+    });
+
+    _client->AddPacketHandler(nsPacketId::CLIENT_ID, [this](const nsPacket *packet) {
+        const auto p = reinterpret_cast<const nsClientIdPacket *>(packet);
+        Log::Info("Client ID: %i", p->id);
+        _selfId = p->clientId;
+
+        nsClientSpawn cc = {};
+        cc.clientId = _selfId;
+        cc.targetType = TARGET_OTHER_CLIENTS;
+        cc.pos = _self->origin.pos;
+        cc.color = _self->desc.color;
+        _client->SendPacket(&cc);
+    });
+
+    _client->AddPacketHandler(nsClientPacketId::CLIENT_SPAWN, [this](const nsPacket *packet) {
+        const auto p = reinterpret_cast<const nsClientSpawn *>(packet);
+        //other client spawn
+        nsClientSprite *s = new nsClientSprite();
+        s->clientId = p->clientId;
+        s->origin.pos = p->pos;
+        s->desc.color = p->color;
+        _sprites.push_back(s);
+        _stage->AddChild(s);
+
+        //self info to other client
+        nsClientInfo info = {};
+        info.clientId = _selfId;
+        info.targetType = TARGET_CLIENT;
+        info.targetId = p->clientId;
+        info.pos = _self->origin.pos;
+        info.color = _self->desc.color;
+        _client->SendPacket(&info);
+    });
+
+    _client->AddPacketHandler(nsClientPacketId::CLIENT_INFO, [this](const nsPacket *packet) {
+        const auto p = reinterpret_cast<const nsClientInfo *>(packet);
+        nsClientSprite *s = new nsClientSprite();
+        s->clientId = p->clientId;
+        s->origin.pos = p->pos;
+        s->desc.color = p->color;
+        _sprites.push_back(s);
+        _stage->AddChild(s);
+    });
+
+    _client->AddPacketHandler(nsClientPacketId::CLIENT_DISCONNECTED, [this](const nsPacket *packet) {
+        const auto p = reinterpret_cast<const nsClientDisconnected *>(packet);
+        for (auto it = _sprites.begin(); it != _sprites.end(); ++it) {
+            if ((*it)->clientId == p->clientId) {
+                _stage->RemoveChild(*it);
+                _sprites.erase(it);
+                delete *it;
+                break;
+            }
+        }
     });
 
     g_cfg->RegCmd("msg", [this](int argc, const char *args[]) {
@@ -55,15 +116,43 @@ void nsGameTemplate::Release() {
 void nsGameTemplate::DrawWorld() {
     _device->ClearScene(CLR_CBUFF | CLR_ZBUFF | CLR_STENCIL);
 
-    _stage->origin.pos = nsAppUtils::GetClientSize() / 2;
-
     nsVisualSceneRender2d::DrawScene(_stage);
 }
 
 void nsGameTemplate::Loop(float frameTime) {
+    if (_client->GetState() == nsClient::DISCONNECTED) {
+        for (auto s : _sprites) {
+            _stage->RemoveChild(s);
+            delete s;
+        }
+        _sprites.clear();
+    }
+
     _client->ProcessPackets();
     _stage->Loop();
-    _stage->origin.angle = _stage->origin.angle + frameTime;
+
+    auto app = App_GetPlatform();
+
+    nsVec2 dir;
+    if (app->IsKeyPressed(NS_KEY_RIGHT)) {
+        dir.x = 1;
+    }
+    if (app->IsKeyPressed(NS_KEY_LEFT)) {
+        dir.x = -1;
+    }
+    if (app->IsKeyPressed(NS_KEY_UP)) {
+        dir.y = 1;
+    }
+    if (app->IsKeyPressed(NS_KEY_DOWN)) {
+        dir.y = -1;
+    }
+
+    if (dir.x || dir.y) {
+        nsVec2 pos = _self->origin.pos;
+        dir.Norm();
+        pos += dir * frameTime * 100;
+        _self->origin.pos = pos;
+    }
 }
 
 IUserInput *nsGameTemplate::GetUserInput() {
@@ -71,11 +160,9 @@ IUserInput *nsGameTemplate::GetUserInput() {
 }
 
 void nsGameTemplate::OnActivate(bool active) {
-
 }
 
 void nsGameTemplate::OnPause(bool paused) {
-
 }
 
 int nsGameTemplate::GetWindowIcon() {
@@ -97,7 +184,6 @@ const char *nsGameTemplate::GetVersionInfo() {
 
 static nsGameTemplate g_game;
 
-IGameApp*	App_GetGame() {
+IGameApp *App_GetGame() {
     return &g_game;
 }
-

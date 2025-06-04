@@ -3,6 +3,9 @@ project(GameTemplate)
 set(sources
         GameApp.cpp
         GameAppInfo.cpp
+        ClientSprite.cpp
+        ClientSprite.h
+        Packets.h
 )
 
 set(LINK_ENGINE_LIBS ${GROM_ENGINE_LIBS} Networking)
