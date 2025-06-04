@@ -3,6 +3,8 @@
 //
 
 #include "GameApp.h"
+
+#include "Core/Config.h"
 #include "Engine/Platform.h"
 #include "Engine/display/VisualSceneRender2d.h"
 #include "Engine/RenManager.h"
@@ -22,6 +24,17 @@ bool nsGameTemplate::Init() {
     _client->AddPacketHandler(nsPacketId::MESSAGE, [](const nsPacket *packet) {
         const auto msg = reinterpret_cast<const nsMessagePacket*>(packet);
         Log::Info("Net message: %s", msg->message);
+    });
+
+    g_cfg->RegCmd("msg", [this](int argc, const char *args[]) {
+        if (argc < 2) {
+            Log::Warning("Usage: msg <message>");
+        } else {
+            Log::Info("Sending message: %s", args[1]);
+            nsMessagePacket msg = {};
+            strcpy(msg.message, args[1]);
+            _client->SendPacket(&msg);
+        }
     });
 
     _client->Connect("127.0.0.1", 3333);
