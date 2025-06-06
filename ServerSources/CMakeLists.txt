@@ -4,6 +4,8 @@ set(sources
         main.cpp
         ServerTestApp.cpp
         ServerTestApp.h
+        TestServer.cpp
+        TestServer.h
 )
 
 include_directories(./)

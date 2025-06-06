@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "TestServer.h"
 #include "Core/Memory.h"
 #include "Core/debug/LogStdOut.h"
 #include "Engine/Platform.h"
@@ -21,7 +22,7 @@ int main(int argc, char *argv[]) {
         Log::Info("Server initialized");
     }
 
-    const auto server = new nsServer(3333);
+    const auto server = new nsTestServer(3333);
     server->Start();
 
     while (true) {
