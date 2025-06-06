@@ -10,7 +10,6 @@
 #include "Engine/Platform.h"
 #include "Engine/display/VisualSceneRender2d.h"
 #include "Engine/RenManager.h"
-#include "Engine/utils/AppUtils.h"
 #include "Networking/Net.h"
 #include "Networking/client/Client.h"
 
@@ -67,6 +66,14 @@ bool nsGameTemplate::Init() {
 
     _client->AddPacketHandler(nsClientPacketId::CLIENT_INFO, [this](const nsPacket *packet) {
         const auto p = reinterpret_cast<const nsClientInfo *>(packet);
+        for (auto it = _sprites.begin(); it != _sprites.end(); ++it) {
+            if ((*it)->clientId == p->clientId) {
+                (*it)->origin.pos = p->pos;
+                (*it)->desc.color = p->color;
+                return;
+            }
+        }
+
         nsClientSprite *s = new nsClientSprite();
         s->clientId = p->clientId;
         s->origin.pos = p->pos;
@@ -121,7 +128,7 @@ void nsGameTemplate::DrawWorld() {
 
 void nsGameTemplate::Loop(float frameTime) {
     if (_client->GetState() == nsClient::DISCONNECTED) {
-        for (auto s : _sprites) {
+        for (auto s: _sprites) {
             _stage->RemoveChild(s);
             delete s;
         }
@@ -152,6 +159,13 @@ void nsGameTemplate::Loop(float frameTime) {
         dir.Norm();
         pos += dir * frameTime * 100;
         _self->origin.pos = pos;
+
+        nsClientInfo info = {};
+        info.clientId = _selfId;
+        info.targetType = TARGET_OTHER_CLIENTS;
+        info.pos = _self->origin.pos;
+        info.color = _self->desc.color;
+        _client->SendPacket(&info);
     }
 }
 
