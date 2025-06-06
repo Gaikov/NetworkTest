@@ -105,6 +105,20 @@ bool nsGameTemplate::Init() {
         }
     });
 
+    g_cfg->RegCmd("connect", [this](int argc, const char *args[]) {
+        if (argc < 2) {
+            Log::Warning("Usage: connect <ip>");
+        } else {
+            Log::Info("Connecting to %s", args[1]);
+            _client->Disconnect();
+            _client->Connect(args[1], 3333);
+        }
+    });
+
+    g_cfg->RegCmd("disconnect", [this](int argc, const char *args[]) {
+        _client->Disconnect();
+    });
+
     _client->Connect("127.0.0.1", 3333);
 
     return true;
