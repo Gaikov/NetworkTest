@@ -4,7 +4,7 @@
 **Standard**: C++20
 **Based on**: [GROmEngine](https://github.com/Gaikov/GROmEngine)
 #### Source Folders:
-ServerSources - server source code
+ServerSources - server source code  
 GameSources - client game source code
 
 ---
