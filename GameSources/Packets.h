@@ -17,27 +17,27 @@ struct  nsClientPacketId {
 
 struct nsClientPosition : nsPacket {
     static constexpr unsigned short ID = nsClientPacketId::CLIENT_POSITION;
-    int clientId;
+    uint16_t clientId;
     nsVec2 pos;
     nsColor color;
 };
 
 struct nsClientSpawn : nsPacket {
     static constexpr unsigned short ID = nsClientPacketId::CLIENT_SPAWN;
-    int clientId;
+    uint16_t clientId;
     nsVec2 pos;
     nsColor color;
 };
 
 struct nsClientInfo : nsPacket {
     static constexpr unsigned short ID = nsClientPacketId::CLIENT_INFO;
-    int clientId;
+    uint16_t clientId;
     nsVec2 pos;
     nsColor color;
 };
 
 struct nsClientDisconnected : nsPacket {
     static constexpr unsigned short ID = nsClientPacketId::CLIENT_DISCONNECTED;
-    int clientId;
+    uint16_t clientId;
 };
 
