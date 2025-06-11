@@ -13,6 +13,9 @@
 #include "Networking/Net.h"
 #include "Networking/client/Client.h"
 
+nsGameTemplate::nsGameTemplate() : _fixedUpdate(20, this) {
+}
+
 bool nsGameTemplate::Init() {
     srand(time(nullptr));
 
@@ -171,16 +174,20 @@ void nsGameTemplate::Loop(float frameTime) {
     if (dir.x || dir.y) {
         nsVec2 pos = _self->origin.pos;
         dir.Norm();
-        pos += dir * frameTime * 100;
+        pos += dir * frameTime * 400;
         _self->origin.pos = pos;
-
-        nsClientInfo info = {};
-        info.clientId = _selfId;
-        info.targetType = TARGET_OTHER_CLIENTS;
-        info.pos = _self->origin.pos;
-        info.color = _self->desc.color;
-        _client->SendPacket(&info);
     }
+
+    _fixedUpdate.Update(frameTime);
+}
+
+void nsGameTemplate::OnFixedUpdate(float frameTime) {
+    nsClientInfo info = {};
+    info.clientId = _selfId;
+    info.targetType = TARGET_OTHER_CLIENTS;
+    info.pos = _self->origin.pos;
+    info.color = _self->desc.color;
+    _client->SendPacket(&info);
 }
 
 IUserInput *nsGameTemplate::GetUserInput() {

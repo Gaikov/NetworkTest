@@ -12,7 +12,7 @@ IAppInfo *App_GetInfo()
 }
 
 const char *nsGameAppInfo::GetAppName() {
-    return "game_template";
+    return "network_template";
 }
 
 const char *nsGameAppInfo::GetDefCfgPath() {
