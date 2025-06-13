@@ -182,6 +182,10 @@ void nsGameTemplate::Loop(float frameTime) {
 }
 
 void nsGameTemplate::OnFixedUpdate(float frameTime) {
+    if (_client->GetState() != nsClient::CONNECTED) {
+        return;
+    }
+
     nsClientInfo info = {};
     info.clientId = _selfId;
     info.targetType = TARGET_OTHER_CLIENTS;
