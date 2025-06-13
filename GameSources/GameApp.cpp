@@ -4,6 +4,8 @@
 
 #include "GameApp.h"
 
+#include <Engine/TimeFormat.h>
+
 #include "Packets.h"
 #include "Engine/Input.h"
 #include "Core/Config.h"
@@ -13,10 +15,10 @@
 #include "Networking/Net.h"
 #include "Networking/client/Client.h"
 
-nsGameTemplate::nsGameTemplate() : _fixedUpdate(20, this) {
+nsGameApp::nsGameApp() : _fixedUpdate(20, this) {
 }
 
-bool nsGameTemplate::Init() {
+bool nsGameApp::Init() {
     srand(time(nullptr));
 
     if (!nsNet::Init()) {
@@ -127,7 +129,7 @@ bool nsGameTemplate::Init() {
     return true;
 }
 
-void nsGameTemplate::Release() {
+void nsGameApp::Release() {
     delete _client;
 
     if (_stage) {
@@ -137,13 +139,13 @@ void nsGameTemplate::Release() {
     nsNet::Release();
 }
 
-void nsGameTemplate::DrawWorld() {
+void nsGameApp::DrawWorld() {
     _device->ClearScene(CLR_CBUFF | CLR_ZBUFF | CLR_STENCIL);
 
     nsVisualSceneRender2d::DrawScene(_stage);
 }
 
-void nsGameTemplate::Loop(float frameTime) {
+void nsGameApp::Loop(float frameTime) {
     if (_client->GetState() == nsClient::DISCONNECTED) {
         for (auto s: _sprites) {
             _stage->RemoveChild(s);
@@ -178,10 +180,11 @@ void nsGameTemplate::Loop(float frameTime) {
         _self->origin.pos = pos;
     }
 
-    _fixedUpdate.Update(frameTime);
+    //_fixedUpdate.Update(frameTime);
+    OnFixedUpdate(g_frameTime);
 }
 
-void nsGameTemplate::OnFixedUpdate(float frameTime) {
+void nsGameApp::OnFixedUpdate(float frameTime) {
     if (_client->GetState() != nsClient::CONNECTED) {
         return;
     }
@@ -194,34 +197,34 @@ void nsGameTemplate::OnFixedUpdate(float frameTime) {
     _client->SendPacket(&info);
 }
 
-IUserInput *nsGameTemplate::GetUserInput() {
+IUserInput *nsGameApp::GetUserInput() {
     return _stage;
 }
 
-void nsGameTemplate::OnActivate(bool active) {
+void nsGameApp::OnActivate(bool active) {
 }
 
-void nsGameTemplate::OnPause(bool paused) {
+void nsGameApp::OnPause(bool paused) {
 }
 
-int nsGameTemplate::GetWindowIcon() {
+int nsGameApp::GetWindowIcon() {
     return 0;
 }
 
-bool nsGameTemplate::InitDialog() {
+bool nsGameApp::InitDialog() {
     return true;
 }
 
 
-void nsGameTemplate::GetGUIDimension(int &width, int &height) {
+void nsGameApp::GetGUIDimension(int &width, int &height) {
     App_GetPlatform()->GetClientSize(width, height);
 }
 
-const char *nsGameTemplate::GetVersionInfo() {
+const char *nsGameApp::GetVersionInfo() {
     return "NetworkTest 1.0.0";
 }
 
-static nsGameTemplate g_game;
+static nsGameApp g_game;
 
 IGameApp *App_GetGame() {
     return &g_game;

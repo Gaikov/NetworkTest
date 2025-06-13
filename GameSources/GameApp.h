@@ -12,7 +12,7 @@
 #include "Engine/timing/FixedUpdate.h"
 #include "Networking/client/Client.h"
 
-class nsGameTemplate : public IGameApp, nsFixedUpdateListener {
+class nsGameApp : public IGameApp, nsFixedUpdateListener {
     nsVisualContainer2d *_stage = nullptr;
     IRenDevice *_device = nullptr;
     nsClient  *_client = nullptr;
@@ -22,7 +22,7 @@ class nsGameTemplate : public IGameApp, nsFixedUpdateListener {
     nsFixedUpdate _fixedUpdate;
 
 public:
-    nsGameTemplate();
+    nsGameApp();
 
 private:
     bool Init() override;
