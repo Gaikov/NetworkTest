@@ -23,13 +23,13 @@ int main(int argc, char *argv[]) {
     }
 
     const auto server = new nsTestServer(3333);
-    server->Start();
-
-    while (true) {
-        std::string command;
-        std::getline(std::cin, command);
-        if (command == "quit") {
-            break;
+    if (server->Start()) {
+        while (true) {
+            std::string command;
+            std::getline(std::cin, command);
+            if (command == "quit") {
+                break;
+            }
         }
     }
 

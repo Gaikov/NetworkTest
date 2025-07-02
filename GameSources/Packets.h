@@ -6,7 +6,7 @@
 #pragma once
 #include "Networking/Packet.h"
 #include "nsLib/Vec2.h"
-#include "nsLib/Color.h"
+#include "nsLib/color.h"
 
 struct  nsClientPacketId {
     static constexpr unsigned short CLIENT_POSITION = nsPacketId::LAST_ID;

@@ -4,8 +4,7 @@
 
 #include "GameApp.h"
 
-#include <Engine/TimeFormat.h>
-
+#include "Engine/TimeFormat.h"
 #include "Packets.h"
 #include "Engine/Input.h"
 #include "Core/Config.h"
@@ -52,7 +51,7 @@ bool nsGameApp::Init() {
     _client->AddPacketHandler(nsClientPacketId::CLIENT_SPAWN, [this](const nsPacket *packet) {
         const auto p = reinterpret_cast<const nsClientSpawn *>(packet);
         //other client spawn
-        nsClientSprite *s = new nsClientSprite();
+        const auto s = new nsClientSprite();
         s->clientId = p->clientId;
         s->origin.pos = p->pos;
         s->desc.color = p->color;
@@ -79,7 +78,7 @@ bool nsGameApp::Init() {
             }
         }
 
-        nsClientSprite *s = new nsClientSprite();
+        const auto s = new nsClientSprite();
         s->clientId = p->clientId;
         s->origin.pos = p->pos;
         s->desc.color = p->color;
