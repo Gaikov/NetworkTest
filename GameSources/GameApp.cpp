@@ -131,6 +131,7 @@ void nsGameApp::DrawWorld() {
 }
 
 void nsGameApp::Loop(float frameTime) {
+    _client->Update();
     _stage->Loop();
 
     auto app = App_GetPlatform();
@@ -160,8 +161,6 @@ void nsGameApp::Loop(float frameTime) {
 }
 
 void nsGameApp::OnFixedUpdate(float frameTime) {
-    _client->Update();
-
     if (_client->State != nsClient::CONNECTED || _selfId < 0) {
         return;
     }
