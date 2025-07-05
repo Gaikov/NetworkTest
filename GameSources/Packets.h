@@ -10,23 +10,8 @@
 
 struct  nsClientPacketId {
     static constexpr unsigned short CLIENT_POSITION = nsPacketId::LAST_ID;
-    static constexpr unsigned short CLIENT_SPAWN = nsPacketId::LAST_ID + 1;
-    static constexpr unsigned short CLIENT_INFO = nsPacketId::LAST_ID + 2;
-    static constexpr unsigned short CLIENT_DISCONNECTED = nsPacketId::LAST_ID + 3;
-};
-
-struct nsClientPosition : nsPacket {
-    static constexpr unsigned short ID = nsClientPacketId::CLIENT_POSITION;
-    uint16_t clientId;
-    nsVec2 pos;
-    nsColor color;
-};
-
-struct nsClientSpawn : nsPacket {
-    static constexpr unsigned short ID = nsClientPacketId::CLIENT_SPAWN;
-    uint16_t clientId;
-    nsVec2 pos;
-    nsColor color;
+    static constexpr unsigned short CLIENT_INFO = nsPacketId::LAST_ID + 1;
+    static constexpr unsigned short CLIENT_DISCONNECTED = nsPacketId::LAST_ID + 2;
 };
 
 struct nsClientInfo : nsPacket {

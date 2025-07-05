@@ -4,7 +4,6 @@
 
 #include "GameApp.h"
 
-#include "Engine/TimeFormat.h"
 #include "Packets.h"
 #include "Engine/Input.h"
 #include "Core/Config.h"
@@ -24,12 +23,25 @@ bool nsGameApp::Init() {
         return false;
     }
 
+    _client = new nsClient();
+
     _device = nsRenDevice::Shared()->Device();
     _stage = new nsVisualContainer2d();
     _self = new nsClientSprite();
     _stage->AddChild(_self);
 
-    _client = new nsClient();
+    _client->State.AddHandler(nsPropChangedName::CHANGED, [this](const nsBaseEvent*) {
+        const nsClient::ConnectionState state = _client->State;
+        if (state == nsClient::DISCONNECTED) {
+            for (const auto s: _sprites) {
+                _stage->RemoveChild(s);
+                delete s;
+            }
+            _sprites.clear();
+            _selfId = -1;
+        }
+    });
+
     _client->AddPacketHandler(nsPacketId::MESSAGE, [](const nsPacket *packet) {
         const auto msg = reinterpret_cast<const nsMessagePacket *>(packet);
         Log::Info("Net message: %s", msg->message);
@@ -37,35 +49,8 @@ bool nsGameApp::Init() {
 
     _client->AddPacketHandler(nsPacketId::CLIENT_ID, [this](const nsPacket *packet) {
         const auto p = reinterpret_cast<const nsClientIdPacket *>(packet);
-        Log::Info("Client ID: %i", p->id);
+        Log::Info("Client ID: %i", p->clientId);
         _selfId = p->clientId;
-
-        nsClientSpawn cc = {};
-        cc.clientId = _selfId;
-        cc.targetType = TARGET_OTHER_CLIENTS;
-        cc.pos = _self->origin.pos;
-        cc.color = _self->desc.color;
-        _client->SendPacket(&cc);
-    });
-
-    _client->AddPacketHandler(nsClientPacketId::CLIENT_SPAWN, [this](const nsPacket *packet) {
-        const auto p = reinterpret_cast<const nsClientSpawn *>(packet);
-        //other client spawn
-        const auto s = new nsClientSprite();
-        s->clientId = p->clientId;
-        s->origin.pos = p->pos;
-        s->desc.color = p->color;
-        _sprites.push_back(s);
-        _stage->AddChild(s);
-
-        //self info to other client
-        nsClientInfo info = {};
-        info.clientId = _selfId;
-        info.targetType = TARGET_CLIENT;
-        info.targetId = p->clientId;
-        info.pos = _self->origin.pos;
-        info.color = _self->desc.color;
-        _client->SendPacket(&info);
     });
 
     _client->AddPacketHandler(nsClientPacketId::CLIENT_INFO, [this](const nsPacket *packet) {
@@ -115,6 +100,7 @@ bool nsGameApp::Init() {
         } else {
             Log::Info("Connecting to %s", args[1]);
             _client->Disconnect();
+            _selfId = -1;
             _client->Connect(args[1], 3333);
         }
     });
@@ -145,15 +131,6 @@ void nsGameApp::DrawWorld() {
 }
 
 void nsGameApp::Loop(float frameTime) {
-    if (_client->GetState() == nsClient::DISCONNECTED) {
-        for (auto s: _sprites) {
-            _stage->RemoveChild(s);
-            delete s;
-        }
-        _sprites.clear();
-    }
-
-    _client->ProcessPackets();
     _stage->Loop();
 
     auto app = App_GetPlatform();
@@ -179,12 +156,13 @@ void nsGameApp::Loop(float frameTime) {
         _self->origin.pos = pos;
     }
 
-    //_fixedUpdate.Update(frameTime);
-    OnFixedUpdate(g_frameTime);
+    _fixedUpdate.Update(frameTime);
 }
 
 void nsGameApp::OnFixedUpdate(float frameTime) {
-    if (_client->GetState() != nsClient::CONNECTED) {
+    _client->Update();
+
+    if (_client->State != nsClient::CONNECTED || _selfId < 0) {
         return;
     }
 
