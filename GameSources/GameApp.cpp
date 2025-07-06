@@ -75,9 +75,9 @@ bool nsGameApp::Init() {
         const auto p = reinterpret_cast<const nsClientDisconnected *>(packet);
         for (auto it = _sprites.begin(); it != _sprites.end(); ++it) {
             if ((*it)->clientId == p->clientId) {
-                _stage->RemoveChild(*it);
+                Log::Info("Removing client %i", p->clientId);
+                (*it)->Destroy();
                 _sprites.erase(it);
-                delete *it;
                 break;
             }
         }
