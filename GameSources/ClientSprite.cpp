@@ -35,6 +35,18 @@ void nsClientSprite::Loop() {
     }
 }
 
+bool nsClientSprite::OnNetPacket(const nsPacket *packet) {
+    if (packet->id == nsClientPacketId::CLIENT_INFO) {
+        const auto p = reinterpret_cast<const nsClientInfo *>(packet);
+        if (p->clientId == _clientId) {
+            origin.pos = p->pos;
+            desc.color = p->color;
+            return true;
+        }
+    }
+    return false;
+}
+
 void nsClientSprite::UpdateLocal() {
     auto app = App_GetPlatform();
 

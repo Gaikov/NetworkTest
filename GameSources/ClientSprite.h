@@ -14,6 +14,7 @@ public:
     void FixedUpdate() const;
 
     void Loop() override;
+    bool OnNetPacket(const nsPacket *packet);
 
 private:
     nsClient * _client = nullptr;

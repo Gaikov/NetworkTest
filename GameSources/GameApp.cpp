@@ -55,21 +55,24 @@ bool nsGameApp::Init() {
         _stage->AddChild(s);
     });
 
-    _client->AddPacketHandler(nsClientPacketId::CLIENT_INFO, [this](const nsPacket *packet) {
-        const auto p = reinterpret_cast<const nsClientInfo *>(packet);
-        for (auto it = _sprites.begin(); it != _sprites.end(); ++it) {
-            if ((*it)->GetId() == p->clientId) {
-                (*it)->origin.pos = p->pos;
-                (*it)->desc.color = p->color;
-                return;
+    _client->AddCommonPacketsHandler([this](const nsPacket *packet) -> bool {
+        for (auto s : _sprites) {
+            if (s->OnNetPacket(packet)) {
+                return true;
             }
         }
 
-        const auto s = new nsClientSprite(_client, p->clientId, false);
-        s->origin.pos = p->pos;
-        s->desc.color = p->color;
-        _sprites.push_back(s);
-        _stage->AddChild(s);
+        if (packet->id == nsClientPacketId::CLIENT_INFO) {
+            auto p = reinterpret_cast<const nsClientInfo *>(packet);
+            const auto s = new nsClientSprite(_client, p->clientId, false);
+            s->origin.pos = p->pos;
+            s->desc.color = p->color;
+            _sprites.push_back(s);
+            _stage->AddChild(s);
+            return true;
+        }
+
+        return false;
     });
 
     _client->AddPacketHandler(nsClientPacketId::CLIENT_DISCONNECTED, [this](const nsPacket *packet) {
