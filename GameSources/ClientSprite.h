@@ -21,6 +21,10 @@ private:
     bool _local = false;
     int _clientId = 0;
 
+    nsBinaryState _state;
+    nsBinaryVar<nsVec2> _pos = nsVec2(0, 0);
+    nsBinaryVar<nsColor> _color = nsColor::white;
+
     void UpdateLocal();
     void SendLocalState() const;
 };

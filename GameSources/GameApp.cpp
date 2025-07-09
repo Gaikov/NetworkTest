@@ -65,10 +65,9 @@ bool nsGameApp::Init() {
         if (packet->id == nsClientPacketId::CLIENT_INFO) {
             auto p = reinterpret_cast<const nsClientInfo *>(packet);
             const auto s = new nsClientSprite(_client, p->clientId, false);
-            s->origin.pos = p->pos;
-            s->desc.color = p->color;
             _sprites.push_back(s);
             _stage->AddChild(s);
+            s->OnNetPacket(packet);
             return true;
         }
 

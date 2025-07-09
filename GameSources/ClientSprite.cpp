@@ -18,13 +18,27 @@ nsClientSprite::nsClientSprite(nsClient *client, int clientId, bool local)
     desc.tex = _device->TextureLoad("textures/client.png");
     desc.ComputeCenter();
     renState = _device->StateLoad("default/rs/gui_clamp.txt");
-    desc.color.Rand();
 
-    auto size = nsAppUtils::GetClientSize();
+    _state.RegisterVar(&_pos);
+    _pos.SetHandler([this]() {
+        origin.pos = _pos.GetValue();
+    });
 
-    nsVec2 pos;
-    pos.Random(200);
-    origin.pos = size / 2 + pos;
+    _state.RegisterVar(&_color);
+    _color.SetHandler([this]() {
+       desc.color = _color.GetValue();
+    });
+
+    if (_local) {
+        const auto size = nsAppUtils::GetClientSize();
+        nsVec2 pos;
+        pos.Random(200);
+        _pos.SetValue( size / 2 + pos);
+
+        nsColor color;
+        color.Rand();
+        _color = color;
+    }
 }
 
 void nsClientSprite::Loop() {
@@ -39,8 +53,7 @@ bool nsClientSprite::OnNetPacket(const nsPacket *packet) {
     if (packet->id == nsClientPacketId::CLIENT_INFO) {
         const auto p = reinterpret_cast<const nsClientInfo *>(packet);
         if (p->clientId == _clientId) {
-            origin.pos = p->pos;
-            desc.color = p->color;
+            _state.DeserializePacket(p);
             return true;
         }
     }
@@ -65,10 +78,10 @@ void nsClientSprite::UpdateLocal() {
     }
 
     if (dir.x || dir.y) {
-        nsVec2 pos = origin.pos;
+        nsVec2 pos = _pos.GetValue();
         dir.Norm();
         pos += dir * g_frameTime * 400;
-        origin.pos = pos;
+        _pos = pos;
     }
 }
 
@@ -76,9 +89,7 @@ void nsClientSprite::SendLocalState() const {
     nsClientInfo info = {};
     info.clientId = _clientId;
     info.targetType = TARGET_OTHER_CLIENTS;
-    info.pos = origin.pos;
-    info.color = desc.color;
-    _client->SendPacket(&info);
+    _client->SendState(&info, _state);
 }
 
 void nsClientSprite::FixedUpdate() const {
