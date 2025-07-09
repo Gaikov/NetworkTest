@@ -27,8 +27,6 @@ bool nsGameApp::Init() {
 
     _device = nsRenDevice::Shared()->Device();
     _stage = new nsVisualContainer2d();
-    _self = new nsClientSprite();
-    _stage->AddChild(_self);
 
     _client->State.AddHandler(nsPropChangedName::CHANGED, [this](const nsBaseEvent*) {
         const nsClient::ConnectionState state = _client->State;
@@ -51,20 +49,23 @@ bool nsGameApp::Init() {
         const auto p = reinterpret_cast<const nsClientIdPacket *>(packet);
         Log::Info("Client ID: %i", p->clientId);
         _selfId = p->clientId;
+
+        const auto s = new nsClientSprite(_client, p->clientId, true);
+        _sprites.push_back(s);
+        _stage->AddChild(s);
     });
 
     _client->AddPacketHandler(nsClientPacketId::CLIENT_INFO, [this](const nsPacket *packet) {
         const auto p = reinterpret_cast<const nsClientInfo *>(packet);
         for (auto it = _sprites.begin(); it != _sprites.end(); ++it) {
-            if ((*it)->clientId == p->clientId) {
+            if ((*it)->GetId() == p->clientId) {
                 (*it)->origin.pos = p->pos;
                 (*it)->desc.color = p->color;
                 return;
             }
         }
 
-        const auto s = new nsClientSprite();
-        s->clientId = p->clientId;
+        const auto s = new nsClientSprite(_client, p->clientId, false);
         s->origin.pos = p->pos;
         s->desc.color = p->color;
         _sprites.push_back(s);
@@ -74,7 +75,7 @@ bool nsGameApp::Init() {
     _client->AddPacketHandler(nsClientPacketId::CLIENT_DISCONNECTED, [this](const nsPacket *packet) {
         const auto p = reinterpret_cast<const nsClientDisconnected *>(packet);
         for (auto it = _sprites.begin(); it != _sprites.end(); ++it) {
-            if ((*it)->clientId == p->clientId) {
+            if ((*it)->GetId() == p->clientId) {
                 Log::Info("Removing client %i", p->clientId);
                 (*it)->Destroy();
                 _sprites.erase(it);
@@ -134,43 +135,17 @@ void nsGameApp::Loop(float frameTime) {
     _client->Update();
     _stage->Loop();
 
-    auto app = App_GetPlatform();
-
-    nsVec2 dir;
-    if (app->IsKeyPressed(NS_KEY_RIGHT)) {
-        dir.x = 1;
-    }
-    if (app->IsKeyPressed(NS_KEY_LEFT)) {
-        dir.x = -1;
-    }
-    if (app->IsKeyPressed(NS_KEY_UP)) {
-        dir.y = 1;
-    }
-    if (app->IsKeyPressed(NS_KEY_DOWN)) {
-        dir.y = -1;
-    }
-
-    if (dir.x || dir.y) {
-        nsVec2 pos = _self->origin.pos;
-        dir.Norm();
-        pos += dir * frameTime * 400;
-        _self->origin.pos = pos;
-    }
-
     _fixedUpdate.Update(frameTime);
 }
 
 void nsGameApp::OnFixedUpdate(float frameTime) {
-    if (_client->State != nsClient::CONNECTED || _selfId < 0) {
+    if (_client->State != nsClient::CONNECTED) {
         return;
     }
 
-    nsClientInfo info = {};
-    info.clientId = _selfId;
-    info.targetType = TARGET_OTHER_CLIENTS;
-    info.pos = _self->origin.pos;
-    info.color = _self->desc.color;
-    _client->SendPacket(&info);
+    for (auto s : _sprites) {
+        s->FixedUpdate();
+    }
 }
 
 IUserInput *nsGameApp::GetUserInput() {

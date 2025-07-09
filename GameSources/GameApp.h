@@ -16,7 +16,7 @@ class nsGameApp : public IGameApp, nsFixedUpdateListener {
     nsVisualContainer2d *_stage = nullptr;
     IRenDevice *_device = nullptr;
     nsClient  *_client = nullptr;
-    nsClientSprite *_self = nullptr;
+
     int _selfId = -1;
     std::vector<nsClientSprite *> _sprites;
     nsFixedUpdate _fixedUpdate;

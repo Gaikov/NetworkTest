@@ -5,10 +5,21 @@
 //--------------------------------------------------------------------------------------------------
 #pragma once
 #include "Engine/display/Sprite.h"
+#include "Networking/client/Client.h"
 
 class nsClientSprite : public nsSprite {
 public:
-    int clientId = 0;
+    nsClientSprite(nsClient *client, int clientId, bool local);
+    int GetId() const { return _clientId; }
+    void FixedUpdate() const;
 
-    nsClientSprite();
+    void Loop() override;
+
+private:
+    nsClient * _client = nullptr;
+    bool _local = false;
+    int _clientId = 0;
+
+    void UpdateLocal();
+    void SendLocalState() const;
 };
